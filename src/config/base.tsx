@@ -34,41 +34,23 @@ const BASE = {
   ],
   toy_cards: [
     {
-      title: "ToysTitle",
+      title: "深度学习",
       project_list: [
         {
-          title: "Toy Sample",
+          title: "LFSA: CLIP Based Text-Image Person Search",
           description:
-            "Toy Description",
-          href: "https://github.com/CottonCandyZ/",
+            "利用 CLIP 做文本行人重识别，换上重新设计的 loss 和 sampler",
+          href: "https://github.com/CottonCandyZ/LFSA",
           img_alt: "Describe how loss and sampler work",
-          img_src: "/toyImages/example.webp",
+          img_src: "/toyImages/LFSA.webp",
         },
       ],
     },
   ],
   friend_link: [
     {
-      name: "Blog Name",
-      description: "Blog description",
-      href: "https://google.com",
-      avatar_src: "/linkAvatar/AvatarSample.webp",
-    },
-    {
-      name: "Blog Name",
-      description: "Blog description Blog description",
-      href: "https://google.com",
-      avatar_src: "/linkAvatar/AvatarSample.webp",
-    },
-    {
-      name: "Blog Name",
-      description: "Blog description Blog description",
-      href: "https://google.com",
-      avatar_src: "/linkAvatar/AvatarSample.webp",
-    },
-    {
-      name: "Blog Name",
-      description: "Blog description",
+      name: "占位！",
+      description: "等待第一个友链",
       href: "https://google.com",
       avatar_src: "/linkAvatar/AvatarSample.webp",
     },
