@@ -129,9 +129,9 @@ export function BgmIcon(props: SVGProps<SVGSVGElement>) {
       <path
         fill="none"
         stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
         d="m12 7l6.632-4m-7.106 4L5.368 3M3 9.154C3 7.964 3.895 7 5 7h14c1.105 0 2 .964 2 2.154v9.692c0 1.19-.895 2.154-2 2.154H5c-1.105 0-2-.964-2-2.154z"
       ></path>
     </svg>
@@ -164,13 +164,10 @@ export const Dot: React.FC<SVGProps<SVGSVGElement>> = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
       height="1em"
-      viewBox="0 0 16 16"
+      viewBox="0 0 24 24"
       {...props}
     >
-      <path
-        fill="currentColor"
-        d="M8 9.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3"
-      ></path>
+      <path fill="currentColor" d="M12 16a4 4 0 1 1 0-8a4 4 0 0 1 0 8Z"></path>
     </svg>
   );
 };
