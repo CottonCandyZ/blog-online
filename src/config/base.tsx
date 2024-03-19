@@ -43,23 +43,7 @@ const BASE = {
           href: "https://github.com/CottonCandyZ/LFSA",
           img_alt: "Describe how loss and sampler work",
           img_src: "/toyImages/LFSA.webp",
-        },
-        {
-          title: "Toy Sample",
-          description:
-            "Toy Description Toy Description Toy Description Toy Description Toy Description",
-          href: "https://github.com/CottonCandyZ/",
-          img_alt: "Describe how loss and sampler work",
-          img_src: "/toyImages/example.webp",
-        },
-        {
-          title: "Toy Sample",
-          description:
-            "Toy Description",
-          href: "https://github.com/CottonCandyZ/",
-          img_alt: "Describe how loss and sampler work",
-          img_src: "/toyImages/example.webp",
-        },
+        }
       ],
     },
   ],
