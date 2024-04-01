@@ -1,6 +1,7 @@
+# 棉花糖的 Blog
+
 这里是 Online 的版本，[Template 仓库 here](https://github.com/CottonCandyZ/blog-t3).
 
-# 棉花糖的 Blog
 
 使用 Next.js 创建，TS & Tailwind，Responsive design。
 
