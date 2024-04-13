@@ -63,5 +63,8 @@ Server Component 的引入主要是为了解决服务器[数据预注入](https:
 
 ## 状态究竟应该保存在哪？
 
-我觉得这是个永恒的问题，实际上面还有一种解决方案，就是使用 cookie 确保每次 SSR 都是正确的结果就行了，但这会导致 Next 认为整个页面都是 dynamic 的，导致其余的东西也会 dynamic SSR，这部分是值得继续优化的。
+我觉得这是个永恒的问题，实际上面还有一种解决方案，就是使用 cookie 确保每次 SSR 都是正确的结果就行了，但这会导致 Next 认为整个页面都是 dynamic 的，导致其余的东西也会 dynamic SSR，~~这部分是值得继续优化的~~ 以被优化，详见下文。
 
+## 2024.13 更新 PPR
+
+上文提到的使用 cookie 来更新应该是最终的解决方案。Next.js 14 带来了 [PPR](https://nextjs.org/learn/dashboard-app/partial-prerendering)，虽然还是实验性功能，但本站已经启用，其配合 cookie 可以很好的解决这个问题，现在已经不会闪烁 🎉。
