@@ -10,7 +10,7 @@ import {
 
 const BASE = {
   nav_router: [
-    { name: "Posts", href: "/", icon: ArticleIcon },
+    { name: "Home", href: "/", icon: ArticleIcon },
     { name: "Toys", href: "/toys", icon: ToysIcon },
     { name: "Links", href: "/link", icon: LinkIcon },
     { name: "About", href: "/about", icon: AboutIcon },
@@ -43,7 +43,7 @@ const BASE = {
           href: "https://github.com/CottonCandyZ/LFSA",
           img_alt: "Describe how loss and sampler work",
           img_src: "/toyImages/LFSA.webp",
-        }
+        },
       ],
     },
   ],

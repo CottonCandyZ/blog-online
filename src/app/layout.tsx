@@ -1,5 +1,4 @@
 import "~/styles/globals.scss";
-import "~/styles/markdown.scss";
 import Footer from "~/components/footer";
 import MobileNav from "~/components/mobile-nav";
 import ThemeWrapper from "~/components/theme-wrapper";
@@ -31,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`scroll-smooth antialiased ${noto_sans.variable} ${noto_sans_sc.variable} ${noto_sans_mono.variable}`}
+      className={`antialiased ${noto_sans.variable} ${noto_sans_sc.variable} ${noto_sans_mono.variable}`}
     >
       <ThemeWrapper theme={theme}>
         <HeaderWithWrapper />
