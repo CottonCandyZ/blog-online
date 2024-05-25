@@ -2,7 +2,7 @@
 
 Here is the online version.
 
-- Created using Next.js 14 (Server Component)
+- Created using Next.js ~~14~~ 15 rc (Server Component)
 - Prisma & WebAuthn manage comments
 
 Some experimental things used here: Server Actions, Next.js Partial Prerendering.
