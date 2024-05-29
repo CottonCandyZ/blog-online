@@ -9,7 +9,6 @@ import { ThemeContext } from '~/components/theme-wrapper'
 function Header() {
   const [toggle, setToggle] = useState(false)
   const { themeNumber, setThemeNumber } = useContext(ThemeContext)
-  const switchRef = useRef<HTMLDivElement>(null)
   const availableThemeNumber = [1, 2, 3, 4].filter((i) => i !== themeNumber)
   const pathname = usePathname()
   const saveTheme = (number: number) => {
@@ -28,59 +27,65 @@ function Header() {
   useEffect(() => {
     setToggle(false)
   }, [pathname])
+  const changeTheme = (num: number) => {
+    saveTheme(num)
+    setToggle((toggle) => !toggle)
+  }
   return (
     <header className="flex flex-row items-center justify-between">
-      <div className="flex flex-row items-center gap-7">
-        <div
-          className={`flex cursor-pointer flex-row items-center gap-1 rounded-xl p-2 hover:bg-primary-light/30
+      <div className="relative flex flex-row items-center gap-7">
+        <button
+          className={`relative z-10 flex cursor-pointer flex-row items-center gap-1 rounded-xl p-2 hover:bg-primary-light/30
           active:scale-95 active:bg-primary-light/20`}
-          ref={switchRef}
+          type="button"
           onClick={() => {
             setToggle((toggle) => !toggle)
           }}
         >
           <span className="text-xl font-semibold text-primary-dark">Cotton</span>
-          <span className="relative flex items-center justify-center">
-            <CottonCandy
-              className={clsx(
-                `theme-${availableThemeNumber[0]} absolute
-          size-10 transition-all duration-200`,
-                {
-                  '-translate-x-[100%] translate-y-[130%]': toggle,
-                },
-              )}
-              onClick={() => {
-                saveTheme(0)
-              }}
-            />
-            <CottonCandy
-              className={clsx(
-                `theme-${availableThemeNumber[1]} absolute 
-          size-10 transition-all duration-400`,
-                {
-                  'translate-y-[130%]': toggle,
-                },
-              )}
-              onClick={() => {
-                saveTheme(1)
-              }}
-            />
-            <CottonCandy
-              className={clsx(
-                `theme-${availableThemeNumber[2]} absolute  
-          size-10 transition-all duration-600`,
-                {
-                  'translate-x-[100%] translate-y-[130%]': toggle,
-                },
-              )}
-              onClick={() => {
-                saveTheme(2)
-              }}
-            />
-            <CottonCandy className="animate-move-show z-10 size-10" />
-          </span>
-
+          <CottonCandy className="animate-move-show size-10" />
           <span className="text-xl font-semibold text-primary-dark">Candy</span>
+        </button>
+        <div className="absolute flex flex-row items-center gap-1 p-2">
+          <span className="text-xl font-semibold text-primary-dark invisible">Cotton</span>
+          <span className="relative size-10">
+            <CottonCandy
+              className={clsx(
+                `theme-${availableThemeNumber[0]} absolute animate-hide
+          size-10 cursor-pointer opacity-0 transition-all duration-200 active:scale-95`,
+                {
+                  '-translate-x-[100%] translate-y-[130%] opacity-100': toggle,
+                },
+              )}
+              onClick={() => {
+                changeTheme(0)
+              }}
+            />
+            <CottonCandy
+              className={clsx(
+                `theme-${availableThemeNumber[1]} absolute animate-hide
+          size-10 cursor-pointer opacity-0 transition-all duration-400 active:scale-95`,
+                {
+                  'translate-y-[130%] opacity-100': toggle,
+                },
+              )}
+              onClick={() => {
+                changeTheme(1)
+              }}
+            />
+            <CottonCandy
+              className={clsx(
+                `theme-${availableThemeNumber[2]} absolute animate-hide
+          size-10 cursor-pointer opacity-0 transition-all duration-600 active:scale-95`,
+                {
+                  'translate-x-[100%] translate-y-[130%] opacity-100': toggle,
+                },
+              )}
+              onClick={() => {
+                changeTheme(2)
+              }}
+            />
+          </span>
         </div>
         <div className="hidden text-lg font-semibold tracking-wider text-primary-dark md:block">
           <NavigationBar />
