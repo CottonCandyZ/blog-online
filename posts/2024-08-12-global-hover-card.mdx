@@ -211,7 +211,10 @@ export default function HoverCardContent({
       content: ref.current.getBoundingClientRect(),
     })
     if (position === null) setPosition({ ...c })
-    else setTranslate({ X: c.X - position.X, Y: c.Y - position.Y })
+    else {
+      setTranslate({ X: c.X - position.X, Y: 0 })
+      setPosition({ ...position, Y: c.Y })
+    }
     isBottom && isBottom(c.bottom)
   }, [
     margin,
@@ -238,31 +241,22 @@ export default function HoverCardContent({
   const setOpen = useSetAtom(hoverCardOpenAtomAction)
 
   return (
-    <motion.div
+    <div
       ref={ref}
       className={cn(
-        'bg-popover text-popover-foreground fixed z-50 w-64 rounded-md border p-4 shadow-md outline-none',
+        'fixed z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none transition-transform duration-100 animate-in fade-in-0',
         className,
       )}
-      // 定位到新的位置
-      animate={{
-        opacity: [0, 1],
-        translateX: translate.X,
-        translateY: translate.Y,
-      }}
-      transition={{
-        duration: 0.1,
-      }}
-      // 初始位置
       style={{
         top: position?.Y ?? 0,
         left: position?.X ?? 0,
+        transform: `translateX(${translate.X}px)`,
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
       {children}
-    </motion.div>
+    </div>
   )
 }
 ```
@@ -328,10 +322,44 @@ const c = calcPos({
   content: ref.current.getBoundingClientRect(),
 })
 if (position === null) setPosition({ ...c }) // [!code focus]
-else setTranslate({ X: c.X - position.X, Y: c.Y - position.Y }) // [!code focus]
+else { // [!code focus]
+  setTranslate({ X: c.X - position.X, Y: 0 }) // [!code focus]
+  setPosition({ ...position, Y: c.Y }) // [!code focus]
+} // [!code focus]
 ```
 
-这里实际上我们首先会先计算一个 top, left 用于 fixed 定位，后续的 re-render 我们需要使用 Transition，这样的好处是可以使用 Transition 做一些动画。然后是一个 resize 的 ob：
+这里实际上我们首先会先计算一个 top, left 用于 fixed 定位，当然你可以直接用 translate。后续的**横向** re-render 我们需要使用 transform-translate，这样的好处是可以使用 transform 做一些动画。注意是横向，如果在纵向上使用 translate，在卡片位于上方时会导致奇怪的行为，纵向的定位更新我们仍然使用 position。
+
+可能会有疑问为什么不止用一种定位方式，比如直接用 top left，然后后续用 transition: left 不就行了。但是实际上**第一次**也会被计算在内，这就导致第一次会从初始的位置乘坐动画出现，这里使用两个值是为了规避第一次的动画（就算使用 layoutEffect 也无法很好的控制这种动画的生命周期）。
+
+至于使用 framer motion 还是原生的，这个随便啦，这里有个 framer motion 的版本：
+
+```tsx
+<motion.div
+  ref={ref}
+  className={cn(
+    'fixed z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none',
+    className,
+  )}
+  animate={{
+    opacity: [0, 1],
+    translateX: translate.X,
+  }}
+  transition={{
+    duration: 0.1,
+  }}
+  style={{
+    top: position?.Y ?? 0,
+    left: position?.X ?? 0,
+  }}
+  onMouseEnter={() => setOpen(true)}
+  onMouseLeave={() => setOpen(false)}
+>
+  {children}
+</motion.div>
+```
+
+然后是一个 resize 的 ob：
 
 ```ts
 useLayoutEffect(() => {
