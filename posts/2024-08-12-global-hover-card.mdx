@@ -21,6 +21,15 @@ abstract: 是一种 Hover Card 实现！
   <source src="/images/2024-08-12-global-hover-card/remake.webm" type="video/webm" />
 </video>
 
+这里我将窗口限制在了一个较小的范围，这样可以演示一些极端情况。
+
+它的特点：
+
+- 全局的，不会被其他元素遮挡，类似在 top layer。
+- 拥有平移的 transition 动画。
+- 拥有 height 动画。
+- 能够根据边界调整高度。
+
 ## Hover Card
 
 我想在聊 hover pop card 之前先发一篇聊聊 [hover-card](https://ui.shadcn.com/docs/components/hover-card)，由于 bangumi-electron 一直用 shadcn 作为 “组件” 库，这里组件打引号的原因是因为 shadcn 不像是个完整的组件库，而是一个整合方案。其大部分“组件”都取自于 [radix-ui](https://www.radix-ui.com/)，然后配合 tailwind 形成一个较为一体的设计方案。所以自然当我想要点格字时就会考虑用上 hover-card:
@@ -198,8 +207,14 @@ export default function HoverCardContent({
 >) {
   const triggerClientRect = useAtomValue(triggerClientRectAtom)
   const ref = useRef<HTMLDivElement>(null)
-  const [translate, setTranslate] = useState({ X: 0, Y: 0 })
-  const [position, setPosition] = useState<Record<'X' | 'Y', number> | null>(null)
+  const [translate, setTranslate] = useState({ X: 0 })
+  const [position, setPosition] = useState<Record<'X' | 'top' | 'bottom', number | undefined>>({
+    X: undefined,
+    top: undefined,
+    bottom: undefined,
+  })
+  const [isCollision, setIsCollision] = useState(false)
+  const [height, setHeight] = useState<number | 'auto'>('auto')
 
   const calc = useCallback(() => {
     if (!triggerClientRect || !ref.current) return
@@ -210,12 +225,19 @@ export default function HoverCardContent({
       trigger: triggerClientRect,
       content: ref.current.getBoundingClientRect(),
     })
-    if (position === null) setPosition({ ...c })
-    else {
-      setTranslate({ X: c.X - position.X, Y: 0 })
-      setPosition({ ...position, Y: c.Y })
+    if (c.height != undefined) {
+      setHeight(c.height)
+      setIsCollision(true)
+    } else {
+      setHeight(ref.current.getBoundingClientRect().height)
+      setIsCollision(false)
     }
-    isBottom && isBottom(c.bottom)
+    if (position.X === undefined) setPosition({ ...c })
+    else {
+      setTranslate({ X: c.X - (position.X ?? 0) })
+      setPosition({ ...position, top: c.top, bottom: c.bottom })
+    }
+    isBottom && isBottom(c.bottom === undefined)
   }, [
     margin,
     collisionPadding,
@@ -242,24 +264,29 @@ export default function HoverCardContent({
 
   return (
     <div
-      ref={ref}
       className={cn(
-        'fixed z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none transition-transform duration-100 animate-in fade-in-0',
-        className,
+        'scroll fixed z-50 rounded-md border bg-popover text-popover-foreground shadow-md transition-[transform_height] duration-150 animate-in fade-in-0',
+        isCollision ? 'overflow-x-hidden' : 'overflow-hidden',
       )}
       style={{
-        top: position?.Y ?? 0,
-        left: position?.X ?? 0,
+        top: position.top,
+        left: position.X,
+        bottom: position.bottom,
         transform: `translateX(${translate.X}px)`,
+        height,
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      {children}
+      <div ref={ref} className={className}>
+        {children}
+      </div>
     </div>
   )
 }
 ```
+
+你可以能注意到我包裹了两层，那是为了计算高度，来实现一个高度动画，我参考了[这里](https://github.com/framer/motion/discussions/1884#discussioncomment-5861808)。如果你仔细观察 [radix-ui](https://www.radix-ui.com/primitives/docs/components/navigation-menu) 的动画和实现代码，会发现有一个 [Viewport](https://www.radix-ui.com/primitives/docs/components/navigation-menu#viewport) 专门干这个，用一个 CSS variable `--radix-navigation-menu-viewport-height`。所以我在这里也是这么干的。
 
 其中还包含一个计算位置的函数，这个写的稍微有点简陋，只能够实现上下的版本：
 
@@ -277,12 +304,13 @@ export function calcPos({
   trigger: DOMRect
   content: DOMRect
 }) {
+  const toTop = trigger.top - margin - undefinedToZero(collisionPadding?.top)
   const toBottom =
     window.innerHeight - trigger.bottom - margin - undefinedToZero(collisionPadding?.bottom)
-  let bottom = true
-
-  let X = 0,
-    Y = 0
+  let X: number | undefined,
+    top: number | undefined,
+    bottom: number | undefined,
+    height: number | undefined
   if (align == 'start') {
     X = trigger.left
     if (X + content.width > window.innerWidth - undefinedToZero(collisionPadding?.right)) {
@@ -295,11 +323,18 @@ export function calcPos({
   }
   if (toBottom >= content.height) {
     // bottom
-    Y = trigger.bottom + margin
-  } else {
+    top = trigger.bottom + margin
+  } else if (toTop >= content.height) {
     // top
-    bottom = false
-    Y = trigger.top - margin - content.height
+    bottom = window.innerHeight - trigger.top + margin
+  } else {
+    if (toTop > toBottom) {
+      bottom = window.innerHeight - trigger.top + margin
+      height = toTop
+    } else {
+      top = trigger.bottom + margin
+      height = toBottom
+    }
   }
   if (X < 0) {
     X = undefinedToZero(collisionPadding?.left)
@@ -307,9 +342,11 @@ export function calcPos({
   if (X + content.width > window.innerWidth - undefinedToZero(collisionPadding?.right)) {
     X = window.innerWidth - content.width - undefinedToZero(collisionPadding?.right)
   }
-  return { X, Y, bottom }
+  return { X, top, bottom, height }
 }
 ```
+
+这里有个细节需要注意，**为了更好的实现 height 动画**，在反转上去的时候，应该使用 **bottom** 定位而非 top，不然动画会不太好看，其中我还计算了碰撞时的建议高度，这样就可以实现在碰撞时，将其在空间较宽裕的一端展开。
 
 这里回过头来说一些 context 的细节：
 
@@ -338,24 +375,28 @@ else { // [!code focus]
 <motion.div
   ref={ref}
   className={cn(
-    'fixed z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none',
-    className,
+    'scroll fixed z-50 rounded-md border bg-popover text-popover-foreground shadow-md',
+    isCollision ? 'overflow-x-hidden' : 'overflow-hidden',
   )}
   animate={{
     opacity: [0, 1],
     translateX: translate.X,
+    height,
   }}
   transition={{
     duration: 0.1,
   }}
   style={{
-    top: position?.Y ?? 0,
-    left: position?.X ?? 0,
+    top: position.Y,
+    left: position.X,
+    height,
   }}
   onMouseEnter={() => setOpen(true)}
   onMouseLeave={() => setOpen(false)}
 >
-  {children}
+  <div ref={ref} className="p-4">
+    {children}
+  </div>
 </motion.div>
 ```
 
