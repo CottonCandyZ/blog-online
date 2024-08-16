@@ -35,9 +35,7 @@ abstract: 最近在边学边做 Bangumi 的 Electron 客户端，于是就想着
 >
   <CarouselContent>
     {Array.from({ length: 24 }).map((_, index) => (
-      <CarouselItem key={index} className="basis-1/6">
-        {' '}
-        // [!code highlight]
+      <CarouselItem key={index} className="basis-1/6"> // [!code highlight]
         <div className="p-1">
           <Card>
             <CardContent className="flex items-center justify-center p-6">
