@@ -8,7 +8,7 @@ abstract: 最近在边学边做 Bangumi 的 Electron 客户端，于是就想着
 
 首先来看看我们要实现的效果：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/store-big-carousel.webm" type="video/webm" />
 </video>
 
@@ -102,7 +102,7 @@ useEffect(() => { // [!code ++]
 
 效果（请无视掉上面那个稍微露出来一点的已经做好的）：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/lazy.webm" type="video/webm" />
 </video>
 
@@ -295,13 +295,13 @@ const [[current, normal], setCurrent] = useState([before, false])
 
 这里用了一些其奇怪的操作，来实现 duration 为 0 的动画，很奇怪对吧，我也觉得很奇怪，而且居然需要监听动画完成来 setState，这样能好好的工作么？我们来看看效果：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/first.webm" type="video/webm" />
 </video>
 
 好像...有那么点意思了！但是：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/first-e.webm" type="video/webm" />
 </video>
 
@@ -336,13 +336,13 @@ const [[current, normal], setCurrent] = useState([before, false])
 
 这里我们直接来看它的动画：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/how-it-works.webm" type="video/webm" />
 </video>
 
 也就是点击第三个之后的会直接跳转到前面去，第三个是为了保证在跳转时最左侧是有的，所以从第三个开始。然后如果是在前面的话，点击前两个会从后面开始，那问题来了，后面那么多是干嘛的？是为了更好的实现循环跳动：
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/why.webm" type="video/webm" />
 </video>
 
@@ -700,7 +700,7 @@ export default function BigCarousel(): JSX.Element {
 
 到了激动人心的时刻，让我们来欣赏一下实现的结果，可以看到不再卡顿，且非常的流畅的说！（我好像忘了点前面 card 来展示返回效果了，实际上是完全没有问题的，后面有空会更新视频，当然最好的方案还是搬上来，让大家一起玩）
 
-<video width="800" controls playsInline>
+<video width="800" controls playsInline preload="none">
   <source src="/images/2024-06-07-microsoft-store-carousel/end.webm" type="video/webm" />
 </video>
 
