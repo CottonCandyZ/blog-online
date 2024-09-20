@@ -45,10 +45,10 @@ const BASE = {
   ],
   friend_link: [
     {
-      name: '占位！',
-      description: '等待第一个友链',
-      href: 'https://google.com',
-      avatar_src: '/linkAvatar/AvatarSample.webp',
+      name: 'AULyPcのBlog',
+      description: '今日も生きててえらい ☁',
+      href: 'https://blog.aulypc0x0.online',
+      avatar_src: '/linkAvatar/favicon_amiya.webp',
     },
   ],
   footer_info: { name: 'CottonCandyZ' },
